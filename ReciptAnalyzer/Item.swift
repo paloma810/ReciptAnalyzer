@@ -24,6 +24,7 @@ struct Item: Identifiable, Codable, Hashable {
     var total_price: Double
     var price: Double
     var buyer_f: Int
+    var remarks: String
 }
 
 /// レスポンスのJSONから購入商品一覧をまとめる関数

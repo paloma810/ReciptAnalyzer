@@ -97,19 +97,16 @@ struct ContentView: View {
                     // レシート画像登録APIをコール
                     lfm.uploadReciptImageToGCS(files: files) { result in
                         switch result {
-                            case .failure(let error):
+                            case .failure(_):
                                 loggerContent.error("failure upload recipt image API call")
                             case .success(let value):
                                 loggerContent.info("end upload recipt image API call value: \(value)")
-                                if (self.currentId == "-1") {
-                                    return
-                                } else {
-                                    self.currentId = value
-                                }
+                                self.currentId = value
+            
                                 // レシート解析APIをコール
                                 lfm.getAnalyzedReciptInfo(id: self.currentId) { result in
                                     switch result {
-                                        case .failure(let error):
+                                        case .failure(_):
                                             loggerContent.error("failure analyze recipt Image API call")
                                         case .success(let value):
                                             loggerContent.info("end analyze recipt Image API call")
@@ -196,6 +193,24 @@ struct ContentView: View {
                                 .frame(width:geo.size.width *  0.2)
                         }
                     }
+                    // 補足情報がある場合には表示
+                    if item.remarks != "" {
+                        // GeometryReaderを用いて水平方向の各Viewの配置位置を割合で指定
+                        GeometryReader { geo in
+                            HStack(spacing: 0) {
+                                // 商品名を表示（商品名全体を見れるようスクロールバーで実現）
+                                ScrollView(.horizontal) {
+                                    Text(item.remarks)
+                                }
+                                    .frame(width:  geo.size.width * 0.3)
+                                // 空文字で表示位置を調整
+                                Text("")
+                                    .lineLimit(nil)
+                                    .frame(width:  geo.size.width * 0.7)
+                            }
+                        }
+                    }
+                    
                 }
                 // GeometryReaderを用いて水平方向の各Viewの配置位置を割合で指定
                 GeometryReader { geo in
